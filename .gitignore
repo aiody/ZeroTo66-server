@@ -9,3 +9,6 @@
 
 # code editro
 .vscode/
+
+# controll environment variables
+.env
