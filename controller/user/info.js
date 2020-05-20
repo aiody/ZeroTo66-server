@@ -12,7 +12,6 @@ module.exports = {
         if (data) {
           return res.status(200).json(data);
         }
-        res.sendStatus(204);
       })
       .catch((err) => {
         console.log(err);

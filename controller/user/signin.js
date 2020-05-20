@@ -9,12 +9,13 @@ module.exports = {
       .findOne({
         where: {
           username: username,
-          password: password,
         },
       })
       .then((data) => {
         if (!data) {
           return res.status(404).send('unvalid user');
+        } else if (password !== data.password) {
+          return res.status(403).send('wrong password');
         }
         let token = jwt.sign({ username: username }, config.secret, {
           expiresIn: '24h', // expires in 24 hours
