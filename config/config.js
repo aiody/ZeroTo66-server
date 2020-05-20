@@ -17,10 +17,10 @@ module.exports = {
     logging: false,
   },
   production: {
-    username: 'root',
+    username: 'Dreamers',
     password: process.env.DATABASE_PASSWORD,
     database: 'zeroto66',
-    host: 'localhost',
+    host: 'zeroto66-database.cm6ux33fkxtm.ap-northeast-2.rds.amazonaws.com',
     dialect: 'mysql',
     logging: false,
   },
