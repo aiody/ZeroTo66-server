@@ -1,16 +1,19 @@
 const express = require('express');
 const userRouter = require('./routes/user');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 const app = express();
 const port = 4000;
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin:
       'http://zeroto66-codestates.s3-website.ap-northeast-2.amazonaws.com',
+    // 'http://localhost:3000',
     method: ['GET', 'POST'],
     credentials: true,
   })
