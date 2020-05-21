@@ -6,4 +6,7 @@ const utils = require('../modules/utils');
 // * POST /habits
 router.post('/', utils.checkToken, habitsController.addHabit.post);
 
+// * GET /habits
+router.get('/', utils.checkToken, habitsController.getHabits.get);
+
 module.exports = router;
