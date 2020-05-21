@@ -1,11 +1,20 @@
 'use strict';
+const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   const habits = sequelize.define(
     'habits',
     {
       habitName: DataTypes.STRING,
-      startData: DataTypes.DATE,
-      deletedDate: DataTypes.DATE,
+      startDate: {
+        type: DataTypes.DATEONLY,
+        defaultValue: DataTypes.NOW,
+        get: function () {
+          return moment
+            .utc(this.getDataValue('startDate'))
+            .format('YYYY-MM-DD');
+        },
+      },
+      deletedDate: DataTypes.DATEONLY,
       userId: DataTypes.INTEGER,
     },
     {

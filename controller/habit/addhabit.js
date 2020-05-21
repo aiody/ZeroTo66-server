@@ -2,9 +2,11 @@ const { habits } = require('../../models');
 module.exports = {
   post: (req, res) => {
     const { habitName } = req.body;
+    const { id } = req.decoded;
     habits
       .findOrCreate({
         where: {
+          userId: id,
           habitName: habitName,
         },
       })
