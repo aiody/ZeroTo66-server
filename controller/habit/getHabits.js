@@ -5,8 +5,10 @@ module.exports = {
     habits
       .findAll({ where: { userId: id } })
       .then((habitsData) => {
-        if (habitsData) {
-          return res.status(200).json(habitsData);
+        if (habitsData && habitsData.length > 0) {
+          res.status(200).json(habitsData);
+        } else {
+          res.status(204).send('no habit');
         }
       })
       .catch((err) => {
