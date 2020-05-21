@@ -1,5 +1,6 @@
 const express = require('express');
 const userRouter = require('./routes/user');
+const recordRouter = require('./routes/record');
 const habitRouter = require('./routes/habit');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
   res.send('Hello Express');
 });
 app.use('/user', userRouter);
+app.use('/record', recordRouter);
 app.use('/habit', habitRouter);
 
 app.listen(port, () => {
