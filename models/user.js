@@ -10,5 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
+  user.associate = function (models) {
+    user.hasMany(models.record, {
+      foreignKey: 'habitId',
+    });
+  };
   return user;
 };

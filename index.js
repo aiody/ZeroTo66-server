@@ -1,5 +1,6 @@
 const express = require('express');
 const userRouter = require('./routes/user');
+const recordRouter = require('./routes/record');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
   res.send('Hello Express');
 });
 app.use('/user', userRouter);
+app.use('/record', recordRouter);
 
 app.listen(port, () => {
   console.log('server on 4000');
