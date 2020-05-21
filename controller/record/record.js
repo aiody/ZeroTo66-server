@@ -1,9 +1,9 @@
 const { record } = require('../../models');
-const { user } = require('../../models');
+const { habits } = require('../../models');
 module.exports = {
   get: (req, res) => {
     const { habitId } = req.body;
-    const { username } = req.decoded;
+    const { id } = req.decoded;
     record
       .findAll({
         where: {
@@ -11,15 +11,16 @@ module.exports = {
         },
         include: [
           {
-            model: user,
-            attributes: ['username'],
-            where: { username: username },
+            model: habits,
+            where: { userId: id },
           },
         ],
       })
       .then((data) => {
-        if (data) {
+        if (data && data.length > 0) {
           return res.status(200).json(data);
+        } else {
+          return res.status(403).send('there is no records');
         }
       })
       .catch((err) => {

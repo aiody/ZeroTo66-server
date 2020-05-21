@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   record.associate = function (models) {
-    record.belongsTo(models.user, {
+    record.belongsTo(models.habits, {
       foreignKey: 'habitId',
     });
   };
