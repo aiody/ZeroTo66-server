@@ -17,9 +17,13 @@ module.exports = {
         } else if (password !== data.password) {
           return res.status(403).send('wrong password');
         }
-        let token = jwt.sign({ username: username }, config.secret, {
-          expiresIn: '24h', // expires in 24 hours
-        });
+        let token = jwt.sign(
+          { id: data.id, username: username },
+          config.secret,
+          {
+            expiresIn: '24h', // expires in 24 hours
+          }
+        );
 
         res.cookie('token', token).status(200).json({
           id: data.id,

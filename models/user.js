@@ -10,5 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
+
+  // to make connection with habits table
+  user.associate = function (models) {
+    user.hasMany(models.habits);
+  };
   return user;
 };
