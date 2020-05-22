@@ -8,5 +8,6 @@ router.post('/', recordController.record.post);
 
 // * GET /record/
 router.get('/', utils.checkToken, recordController.record.get);
+router.get('/today', utils.checkToken, recordController.record.getRecordToday);
 
 module.exports = router;
