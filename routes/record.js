@@ -4,7 +4,7 @@ const { recordController } = require('../controller');
 const utils = require('../modules/utils');
 
 // * POST /record/
-//router.post('/', recordController.record.post);
+router.post('/', recordController.record.post);
 
 // * GET /record/
 router.get('/', utils.checkToken, recordController.record.get);

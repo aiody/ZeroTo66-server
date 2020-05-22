@@ -1,6 +1,7 @@
 const { user } = require('../../models');
 let jwt = require('jsonwebtoken');
 const config = require('../../config/config.js');
+const { record } = require('../record');
 
 module.exports = {
   post: (req, res) => {
@@ -11,7 +12,7 @@ module.exports = {
           username: username,
         },
       })
-      .then((data) => {
+      .then(async (data) => {
         if (!data) {
           return res.status(404).send('unvalid user');
         } else if (password !== data.password) {
@@ -24,7 +25,7 @@ module.exports = {
             expiresIn: '24h', // expires in 24 hours
           }
         );
-
+        await record.syncRecord(data.id);
         res.cookie('token', token).status(200).json({
           id: data.id,
         });
