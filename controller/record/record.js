@@ -50,6 +50,34 @@ const post = (req, res) => {
     });
 };
 
+const getRecordToday = (req, res) => {
+  const { id } = req.decoded;
+  let today = moment().format('YYYY-MM-DD');
+  record
+    .findAll({
+      where: {
+        date: today,
+      },
+      include: [
+        {
+          model: habits,
+          where: { userId: id },
+        },
+      ],
+    })
+    .then((data) => {
+      if (data && data.length > 0) {
+        return res.status(200).json(data);
+      } else {
+        return res.status(403).send('there is no records');
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+};
+
 const addRecord = (
   // add Habit했을 때 오늘 기록, 접속했을 때 날짜 계산해서 최근날짜부터 오늘까지 기록
   habitId,
@@ -98,6 +126,7 @@ const syncRecord = (userId) => {
 module.exports = {
   get: get,
   post: post,
+  getRecordToday: getRecordToday,
   addRecord: addRecord,
   syncRecord: syncRecord,
 };
