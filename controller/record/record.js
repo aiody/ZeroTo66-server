@@ -5,9 +5,11 @@ const moment = require('moment');
 const get = (req, res) => {
   const { habitId } = req.body;
   const { id } = req.decoded;
+  let today = moment().format('YYYY-MM-DD');
   record
-    .findAll({
+    .findOne({
       where: {
+        date: today,
         habitId: habitId,
       },
       include: [
@@ -18,7 +20,7 @@ const get = (req, res) => {
       ],
     })
     .then((data) => {
-      if (data && data.length > 0) {
+      if (data) {
         return res.status(200).json(data);
       } else {
         return res.status(403).send('there is no records');
