@@ -9,12 +9,10 @@ module.exports = {
     const thisYear = moment().format('YYYY');
     let responseData = { done_all: [], done_partially: [] };
     let lastDate = moment(getDateRange(thisYear, thisMonth).end).format('DD');
-
+    let startDate = getDateRange(thisYear, thisMonth).start;
     try {
       for (let i = 0; i < parseInt(lastDate); i++) {
-        let compareDate = moment(getDateRange(thisYear, thisMonth).start)
-          .add(i, 'days')
-          .format('YYYY-MM-DD');
+        let compareDate = moment(startDate).add(i, 'days').format('YYYY-MM-DD');
 
         let arr = await getDaily(compareDate, id);
         let completeArr = arr.filter((val) => {
@@ -22,7 +20,7 @@ module.exports = {
         });
         if (arr.length > 0 && arr.length === completeArr.length) {
           responseData.done_all.push(compareDate);
-        } else if (arr.length > 0) {
+        } else if (arr.length > 0 && arr.length < completeArr.length) {
           responseData.done_partially.push(compareDate);
         }
       }
