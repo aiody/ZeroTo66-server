@@ -3,7 +3,7 @@ module.exports = {
   get: (req, res) => {
     const { id } = req.decoded;
     habits
-      .findAll({ where: { userId: id } })
+      .findAll({ where: { userId: id, deletedDate: null }, raw: true })
       .then((habitsData) => {
         if (habitsData && habitsData.length > 0) {
           res.status(200).json(habitsData);
