@@ -1,4 +1,5 @@
 const { habits } = require('../../models');
+const { record } = require('../record');
 
 module.exports = {
   post: (req, res) => {
@@ -15,6 +16,7 @@ module.exports = {
             res.status(409).send("doesn't created");
           } else {
             const data = await created.get({ plain: true });
+            await record.addRecord(data.id);
             res.status(201).json(data);
           }
         })
