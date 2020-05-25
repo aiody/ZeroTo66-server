@@ -9,4 +9,7 @@ router.post('/', utils.checkToken, habitsController.addHabit.post);
 // * GET /habits
 router.get('/', utils.checkToken, habitsController.getHabits.get);
 
+// * POST /habits/delHabit
+router.post('/delHabit', utils.checkToken, habitsController.delHabit.post);
+
 module.exports = router;
