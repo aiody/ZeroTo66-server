@@ -3,13 +3,13 @@ const router = express.Router();
 const { habitsController } = require('../controller');
 const utils = require('../modules/utils');
 
-// * POST /habits
+// * POST /habit
 router.post('/', utils.checkToken, habitsController.addHabit.post);
 
-// * GET /habits
+// * GET /habit
 router.get('/', utils.checkToken, habitsController.getHabits.get);
 
-// * POST /habits/delHabit
-router.post('/delHabit', utils.checkToken, habitsController.delHabit.post);
+// * PATCH /habit
+router.patch('/', utils.checkToken, habitsController.delHabit.patch);
 
 module.exports = router;

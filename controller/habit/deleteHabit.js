@@ -1,20 +1,15 @@
 const { habits } = require('../../models');
 const moment = require('moment');
 module.exports = {
-  post: (req, res) => {
+  patch: (req, res) => {
     const userId = req.decoded.id;
     const habitId = req.body.habitId;
     const today = moment().format('YYYY-MM-DD');
     habits
-      .findOne({ where: { id: habitId, userId: userId } })
-      .then((data) => {
-        if (data) {
-          return habits.update(
-            { deletedDate: today },
-            { where: { id: habitId, userId: userId } }
-          );
-        }
-      })
+      .update(
+        { deletedDate: today },
+        { where: { id: habitId, userId: userId } }
+      )
       .then(() => {
         res.status(201).send('update deletedDate');
       })
