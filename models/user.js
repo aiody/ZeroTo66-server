@@ -1,4 +1,5 @@
 'use strict';
+const crypto = require('crypto');
 module.exports = (sequelize, DataTypes) => {
   const user = sequelize.define(
     'user',
@@ -8,6 +9,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       timestamps: false,
+      hooks: {
+        afterValidate: (data) => {
+          var shasum = crypto.createHash('sha1');
+          shasum.update(data.password);
+          data.password = shasum.digest('hex');
+        },
+      },
     }
   );
 
