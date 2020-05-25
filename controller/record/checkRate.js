@@ -5,18 +5,14 @@ const moment = require('moment');
 module.exports = {
   getMonthly: async (req, res) => {
     const { id } = req.decoded;
-    const thisM = req.body.thisMonth || moment().format('MM');
-    const thisY = req.body.thisYear || moment().format('YYYY');
+    const thisMonth = moment().format('MM');
+    const thisYear = moment().format('YYYY');
     let responseData = { done_all: [], done_partially: [] };
-    let lastDate = parseInt(
-      moment(getDateRange(thisY, thisM).end).format('DD')
-    );
+    let lastDate = moment(getDateRange(thisYear, thisMonth).end).format('DD');
 
     try {
-      for (let i = 0; i < lastDate; i++) {
-        let compareDate = moment(
-          getDateRange(thisY, thisM).start.format('YYYY-MM-DD')
-        )
+      for (let i = 0; i < parseInt(lastDate); i++) {
+        let compareDate = moment(getDateRange(thisYear, thisMonth).start)
           .add(i, 'days')
           .format('YYYY-MM-DD');
 
@@ -42,7 +38,7 @@ function getDateRange(year, month) {
   let startDate = moment([year, month - 1]);
   let endDate = moment(startDate).endOf('month');
   return {
-    start: startDate,
+    start: startDate.format('YYYY-MM-DD'),
     end: endDate,
   };
 }
