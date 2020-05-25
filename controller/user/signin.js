@@ -2,10 +2,14 @@ const { user } = require('../../models');
 let jwt = require('jsonwebtoken');
 const config = require('../../config/config.js');
 const { record } = require('../record');
+const crypto = require('crypto');
 
 module.exports = {
   post: (req, res) => {
     const { username, password } = req.body;
+    var shasum = crypto.createHash('sha1');
+    shasum.update(password);
+    let encryptedPassword = shasum.digest('hex');
     user
       .findOne({
         where: {
@@ -15,7 +19,7 @@ module.exports = {
       .then(async (data) => {
         if (!data) {
           return res.status(404).send('unvalid user');
-        } else if (password !== data.password) {
+        } else if (encryptedPassword !== data.password) {
           return res.status(403).send('wrong password');
         }
         let token = jwt.sign(

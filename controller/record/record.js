@@ -2,6 +2,7 @@ const { record } = require('../../models');
 const { habits } = require('../../models');
 const moment = require('moment');
 
+// 미사용중
 const get = (req, res) => {
   const { habitId } = req.body;
   const { id } = req.decoded;
@@ -61,7 +62,7 @@ const getRecordToday = (req, res) => {
       include: [
         {
           model: habits,
-          where: { userId: id },
+          where: { userId: id, deletedDate: null },
         },
       ],
     })
@@ -79,7 +80,6 @@ const getRecordToday = (req, res) => {
 };
 
 const addRecord = (
-  // add Habit했을 때 오늘 기록, 접속했을 때 날짜 계산해서 최근날짜부터 오늘까지 기록
   habitId,
   completed = false,
   date = moment().format('YYYY-MM-DD')
@@ -123,10 +123,64 @@ const syncRecord = (userId) => {
   });
 };
 
+const getStreakInfo = (req, res) => {
+  let habitId = req.url.replace('/', '');
+  record
+    .findAll({
+      where: { habitId: habitId, completed: true },
+      order: [['date', 'DESC']],
+    })
+    .then(async (data) => {
+      if (data && data.length > 0) {
+        let total = data.length;
+        let longestStreak = getLongestStreak(data);
+        let streak = getStreak(data);
+        res
+          .status(200)
+          .send({ total: total, longestStreak: longestStreak, streak: streak });
+      } else {
+        res.status(403).send('there is no complete record of it');
+      }
+    });
+};
+
+function getLongestStreak(data) {
+  let longest = 0;
+  let standard = data[0];
+  let standardDiff = 0;
+  for (let i = 0; i < data.length; i++) {
+    let diff = moment(standard.date).diff(data[i].date, 'days');
+    if (diff === standardDiff) {
+      standardDiff++;
+    } else {
+      longest = Math.max(longest, standardDiff);
+      standard = data[i];
+      standardDiff = 1;
+    }
+  }
+  longest = Math.max(longest, standardDiff);
+  return longest;
+}
+
+function getStreak(data) {
+  const today = moment().format('YYYY-MM-DD');
+  if (data[0].date !== today) return 0;
+  let count = 1;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i + 1]) {
+      let diff = moment(data[i].date).diff(data[i + 1].date, 'days');
+      if (diff !== 1) break;
+      count++;
+    }
+  }
+  return count;
+}
+
 module.exports = {
   get: get,
   post: post,
   getRecordToday: getRecordToday,
   addRecord: addRecord,
   syncRecord: syncRecord,
+  getStreakInfo: getStreakInfo,
 };
