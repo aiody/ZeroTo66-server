@@ -15,12 +15,12 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       deletedDate: DataTypes.DATEONLY,
-      unit: { type: DataTypes.ENUM('check', 'count', 'min'), allowNull: false },
       frequency: {
         type: DataTypes.STRING,
         defaultValue: '1111111',
         allowNull: false,
       },
+      unit: { type: DataTypes.ENUM('check', 'count', 'min'), allowNull: false },
       goal: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
     },
