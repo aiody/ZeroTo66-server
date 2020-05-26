@@ -11,7 +11,7 @@ module.exports = {
     const startDate = moment([dateArr[0], dateArr[1] - 1]);
     const diff = moment(today).diff(startDate, 'days');
     try {
-      for (let i = 0; i < diff; i++) {
+      for (let i = 0; i <= diff; i++) {
         let compareDate = moment(startDate).add(i, 'days').format('YYYY-MM-DD');
         let result = await getHabitMonthly(habitId, compareDate);
         responseArr.push(result);
