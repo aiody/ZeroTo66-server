@@ -5,11 +5,16 @@ module.exports = {
   get: async (req, res) => {
     let responseArr = [];
     const habitId = req.query.habitId;
+    const targetMonth = req.query.month || moment().format('MM');
+    const targetYear = req.query.year || moment().format('YYYY');
+    const thisMonth = moment().format('YYYY-MM-DD').split('-')[1]; // ['2020', '05', '25']
+    const startDate = moment([targetYear, targetMonth - 1]);
+    let endDate = moment(startDate).endOf('month');
+    const diff =
+      thisMonth === targetMonth
+        ? moment().diff(startDate, 'days')
+        : moment(endDate).diff(startDate, 'days');
 
-    const today = moment().format('YYYY-MM-DD');
-    const dateArr = today.split('-'); // ['2020', '05', '25']
-    const startDate = moment([dateArr[0], dateArr[1] - 1]);
-    const diff = moment(today).diff(startDate, 'days');
     try {
       for (let i = 0; i <= diff; i++) {
         let compareDate = moment(startDate).add(i, 'days').format('YYYY-MM-DD');

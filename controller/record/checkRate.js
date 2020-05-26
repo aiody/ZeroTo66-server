@@ -7,17 +7,15 @@ module.exports = {
     const { id } = req.decoded;
     const thisMonth = req.query.month || moment().format('MM');
     const thisYear = req.query.year || moment().format('YYYY');
-    const habitId = req.query.habitId || '';
+
     let responseData = { done_all: [], done_partially: [] };
     let lastDate = moment(getDateRange(thisYear, thisMonth).end).format('DD');
     let startDate = getDateRange(thisYear, thisMonth).start;
     try {
       for (let i = 0; i < parseInt(lastDate); i++) {
         let compareDate = moment(startDate).add(i, 'days').format('YYYY-MM-DD');
-        let arr =
-          habitId === ''
-            ? await getDaily(compareDate, id)
-            : await getDailyWithId(compareDate, habitId, id);
+        let arr = await getDaily(compareDate, id);
+
         let completeArr = arr.filter((val) => {
           if (val.completed) return true;
         });
@@ -73,28 +71,3 @@ function getDaily(date, id) {
   });
 }
 
-function getDailyWithId(date, habitId, id) {
-  return new Promise((resolve, reject) => {
-    record
-      .findAll({
-        where: {
-          date: date,
-          habitId: habitId,
-        },
-        include: [
-          {
-            model: habits,
-            where: { userId: id },
-          },
-        ],
-        raw: true,
-      })
-      .then((data) => {
-        resolve(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        reject(err);
-      });
-  });
-}
