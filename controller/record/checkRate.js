@@ -20,7 +20,11 @@ module.exports = {
         });
         if (arr.length > 0 && arr.length === completeArr.length) {
           responseData.done_all.push(compareDate);
-        } else if (arr.length > 0 && arr.length > completeArr.length) {
+        } else if (
+          arr.length > 0 &&
+          arr.length > completeArr.length &&
+          completeArr.length > 0
+        ) {
           responseData.done_partially.push(compareDate);
         }
       }
