@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       frequency: {
         type: DataTypes.STRING,
         defaultValue: '1111111',
+        allowNull: false,
       },
       userId: DataTypes.INTEGER,
     },
