@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       date: DataTypes.DATEONLY,
       completed: DataTypes.BOOLEAN,
+      progress: DataTypes.INTEGER,
     },
     {
       timestamps: false,
