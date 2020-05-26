@@ -3,13 +3,14 @@ const { record } = require('../record');
 
 module.exports = {
   post: (req, res) => {
-    const { habitName } = req.body;
+    const { habitName, frequency } = req.body;
     const { id } = req.decoded;
     if (habitName !== undefined) {
       habits
         .create({
           userId: id,
           habitName: habitName,
+          frequency: frequency,
         })
         .then(async (created) => {
           if (!created) {

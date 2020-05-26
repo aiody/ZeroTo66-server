@@ -5,16 +5,17 @@ const moment = require('moment');
 module.exports = {
   getMonthly: async (req, res) => {
     const { id } = req.decoded;
-    const thisMonth = moment().format('MM');
-    const thisYear = moment().format('YYYY');
+    const thisMonth = req.query.month || moment().format('MM');
+    const thisYear = req.query.year || moment().format('YYYY');
+
     let responseData = { done_all: [], done_partially: [] };
     let lastDate = moment(getDateRange(thisYear, thisMonth).end).format('DD');
     let startDate = getDateRange(thisYear, thisMonth).start;
     try {
       for (let i = 0; i < parseInt(lastDate); i++) {
         let compareDate = moment(startDate).add(i, 'days').format('YYYY-MM-DD');
-
         let arr = await getDaily(compareDate, id);
+
         let completeArr = arr.filter((val) => {
           if (val.completed) return true;
         });
@@ -55,7 +56,7 @@ function getDaily(date, id) {
         include: [
           {
             model: habits,
-            where: { userId: id },
+            where: { userId: id, deletedDate: null },
           },
         ],
         raw: true,
@@ -69,3 +70,4 @@ function getDaily(date, id) {
       });
   });
 }
+
