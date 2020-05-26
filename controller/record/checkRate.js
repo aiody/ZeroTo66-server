@@ -70,3 +70,4 @@ function getDaily(date, id) {
       });
   });
 }
+
