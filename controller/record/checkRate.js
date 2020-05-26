@@ -56,7 +56,7 @@ function getDaily(date, id) {
         include: [
           {
             model: habits,
-            where: { userId: id, completeDate: null },
+            where: { userId: id, deletedDate: null },
           },
         ],
         raw: true,
