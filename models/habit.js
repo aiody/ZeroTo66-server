@@ -20,7 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: '1111111',
         allowNull: false,
       },
-      unit: { type: DataTypes.ENUM('check', 'count', 'min'), allowNull: false },
+      unit: {
+        type: DataTypes.ENUM('check', 'count', 'minute'),
+        allowNull: false,
+      },
       goal: {
         type: DataTypes.INTEGER,
         defaultValue: 1,
