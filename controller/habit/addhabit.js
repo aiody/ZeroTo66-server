@@ -3,7 +3,7 @@ const { record } = require('../record');
 
 module.exports = {
   post: (req, res) => {
-    const { habitName, frequency } = req.body;
+    const { habitName, frequency, unit, goal } = req.body;
     const { id } = req.decoded;
     if (habitName !== undefined) {
       habits
@@ -11,6 +11,8 @@ module.exports = {
           userId: id,
           habitName: habitName,
           frequency: frequency,
+          unit: unit,
+          goal: unit === 1 ? 1 : goal,
         })
         .then(async (created) => {
           if (!created) {
