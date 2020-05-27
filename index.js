@@ -15,7 +15,7 @@ app.use(
   cors({
     origin:
       'http://zeroto66-codestates.s3-website.ap-northeast-2.amazonaws.com',
-    // 'http://localhost:3000',
+    //'http://localhost:3000',
     method: ['GET', 'POST'],
     credentials: true,
   })

@@ -40,7 +40,7 @@ const post = (req, res) => {
   let completed = false;
   habits
     .findOne({
-      attributes: ['id', 'goal'],
+      attributes: ['id', 'goal', 'unit'],
       where: { id: habitId },
       raw: true,
     })
@@ -48,7 +48,12 @@ const post = (req, res) => {
       if (!data) {
         res.status(204).send('There is no data for habit ID');
       } else {
-        if (progress >= data.goal) completed = true;
+        if (
+          (data.unit !== 'minute' && progress >= data.goal) ||
+          (data.unit === 'minute' && progress >= data.goal * 60)
+        ) {
+          completed = true;
+        }
 
         record
           .update(
