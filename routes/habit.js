@@ -8,7 +8,6 @@ router.post('/', utils.checkToken, habitsController.addHabit.post);
 
 // * GET /habit
 router.get('/', utils.checkToken, habitsController.getHabits.get);
-router.get('/detail', utils.checkToken, habitsController.getDetail.get);
 
 // * PATCH /habit
 router.patch('/', utils.checkToken, habitsController.edit.delete);

@@ -1,5 +1,7 @@
 const { record } = require('../../models');
 const { habits } = require('../../models');
+const sequelize = require('sequelize');
+const Op = sequelize.Op;
 const moment = require('moment');
 const dayOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -205,6 +207,61 @@ function getStreak(data) {
   return count;
 }
 
+const getDetail = (req, res) => {
+  let responseArr = [];
+  const habitId = req.query.habitId;
+  const thisMonth = moment().format('YYYY-MM-DD').split('-')[1]; // ['2020', '05', '25']
+  const year = req.query.year || moment().format('YYYY');
+  const month = req.query.month || moment().format('MM');
+
+  const startDate = moment([year, month - 1]);
+  const endDate = moment(startDate).endOf('month');
+
+  const diff =
+    thisMonth === month
+      ? moment().diff(startDate, 'days')
+      : moment(endDate).diff(startDate, 'days');
+
+  record
+    .findAll({
+      where: {
+        [Op.and]: [
+          sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), month),
+          sequelize.where(sequelize.fn('YEAR', sequelize.col('date')), year),
+          { habitId: habitId },
+        ],
+      },
+      order: [['date', 'ASC']],
+      raw: true,
+    })
+    .then((monthlyData) => {
+      if (monthlyData.length === 0) {
+        res.status(204).send('data does not exist');
+      } else {
+        let obj = {};
+        monthlyData.forEach((val) => {
+          obj[`${val.date}`] = val.completed;
+        });
+
+        for (let i = 0; i <= diff; i++) {
+          let compareDate = moment(startDate)
+            .add(i, 'days')
+            .format('YYYY-MM-DD');
+          if (obj[compareDate]) {
+            responseArr.push(true);
+          } else {
+            responseArr.push(false);
+          }
+        }
+        res.status(200).send(responseArr);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+};
+
 module.exports = {
   get: get,
   post: post,
@@ -212,4 +269,5 @@ module.exports = {
   addRecord: addRecord,
   syncRecord: syncRecord,
   getStreakInfo: getStreakInfo,
+  getDetail: getDetail,
 };

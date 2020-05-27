@@ -10,6 +10,7 @@ router.post('/', utils.checkToken, recordController.record.post);
 //router.get('/', utils.checkToken, recordController.record.get);
 router.get('/today', utils.checkToken, recordController.record.getRecordToday);
 router.get('/monthly', utils.checkToken, recordController.checkRate.getMonthly);
+router.get('/detail', utils.checkToken, recordController.record.getDetail);
 router.get('/*', utils.checkToken, recordController.record.getStreakInfo);
 
 module.exports = router;
