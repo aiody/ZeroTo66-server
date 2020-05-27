@@ -12,7 +12,7 @@ module.exports = {
           habitName: habitName,
           frequency: frequency,
           unit: unit,
-          goal: unit === 1 ? 1 : goal,
+          goal: unit === 'check' ? 1 : goal,
         })
         .then(async (created) => {
           if (!created) {
