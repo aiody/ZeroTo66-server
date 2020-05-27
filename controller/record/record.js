@@ -56,7 +56,7 @@ const post = (req, res) => {
             { where: { habitId: habitId, date: today } }
           )
           .then((result /*[1](changed rows) [0](nothing changed) */) => {
-            if (result) {
+            if (result[0] !== 0) {
               res.status(201).send('succeed update habit info');
             } else {
               res.status(204).send('nothing changed');
