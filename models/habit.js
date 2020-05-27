@@ -21,7 +21,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       unit: { type: DataTypes.ENUM('check', 'count', 'min'), allowNull: false },
-      goal: DataTypes.INTEGER,
+      goal: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+        allowNull: false,
+      },
       userId: DataTypes.INTEGER,
     },
     {
