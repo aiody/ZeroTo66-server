@@ -35,20 +35,35 @@ const get = (req, res) => {
 };
 
 const post = (req, res) => {
-  const { habitId, completed } = req.body;
-  let today = moment().format('YYYY-MM-DD');
-  record
-    .update(
-      { completed: completed },
-      {
-        where: {
-          date: today,
-          habitId: habitId,
-        },
+  const { habitId, progress } = req.body;
+  const today = moment().format('YYYY-MM-DD');
+  let completed = false;
+  habits
+    .findOne({
+      attributes: ['id', 'goal'],
+      where: { id: habitId },
+      raw: true,
+    })
+    .then((data) => {
+      if (progress >= data.goal) {
+        completed = true;
       }
-    )
-    .then(() => {
-      res.status(200).send('succeed update habit info');
+      record
+        .update(
+          { progress: progress, completed: completed },
+          { where: { habitId: habitId, date: today } }
+        )
+        .then((result /*[1](changed rows) [0](nothing changed) */) => {
+          if (result) {
+            res.status(201).send('succeed update habit info');
+          } else {
+            res.status(204).send('nothing changed');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          res.sendStatus(500);
+        });
     });
 };
 
