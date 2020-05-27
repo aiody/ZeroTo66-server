@@ -45,9 +45,8 @@ const post = (req, res) => {
       raw: true,
     })
     .then((data) => {
-      if (progress >= data.goal) {
-        completed = true;
-      }
+      if (progress >= data.goal) completed = true;
+
       record
         .update(
           { progress: progress, completed: completed },
