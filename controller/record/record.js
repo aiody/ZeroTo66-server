@@ -45,24 +45,28 @@ const post = (req, res) => {
       raw: true,
     })
     .then((data) => {
-      if (progress >= data.goal) completed = true;
+      if (!data) {
+        res.status(204).send('There is no data for habit ID');
+      } else {
+        if (progress >= data.goal) completed = true;
 
-      record
-        .update(
-          { progress: progress, completed: completed },
-          { where: { habitId: habitId, date: today } }
-        )
-        .then((result /*[1](changed rows) [0](nothing changed) */) => {
-          if (result) {
-            res.status(201).send('succeed update habit info');
-          } else {
-            res.status(204).send('nothing changed');
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          res.sendStatus(500);
-        });
+        record
+          .update(
+            { progress: progress, completed: completed },
+            { where: { habitId: habitId, date: today } }
+          )
+          .then((result /*[1](changed rows) [0](nothing changed) */) => {
+            if (result) {
+              res.status(201).send('succeed update habit info');
+            } else {
+              res.status(204).send('nothing changed');
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            res.sendStatus(500);
+          });
+      }
     });
 };
 
