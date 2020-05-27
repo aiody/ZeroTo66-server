@@ -11,3 +11,4 @@ branch name : feature\_"name of feature"
 
 record.js
 post : 습관이 성공했는지 확인하는 메소드
+getDetail : get method를 사용해서 특정 습관의 월별 정보를 가져옵니다.
