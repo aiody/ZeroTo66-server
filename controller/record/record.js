@@ -5,37 +5,6 @@ const Op = sequelize.Op;
 const moment = require('moment');
 const dayOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-// 미사용중
-const get = (req, res) => {
-  const { habitId } = req.body;
-  const { id } = req.decoded;
-  let today = moment().format('YYYY-MM-DD');
-  record
-    .findOne({
-      where: {
-        date: today,
-        habitId: habitId,
-      },
-      include: [
-        {
-          model: habits,
-          where: { userId: id },
-        },
-      ],
-    })
-    .then((data) => {
-      if (data) {
-        return res.status(200).json(data);
-      } else {
-        return res.status(403).send('there is no records');
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
-};
-
 const post = (req, res) => {
   const { habitId, progress } = req.body;
   const today = moment().format('YYYY-MM-DD');
@@ -64,7 +33,9 @@ const post = (req, res) => {
           )
           .then((result /*[1](changed rows) [0](nothing changed) */) => {
             if (result[0] !== 0) {
-              res.status(201).send('succeed update habit info');
+              res
+                .status(201)
+                .send({ progress: progress, completed: completed });
             } else {
               res.status(204).send('nothing changed');
             }
@@ -175,7 +146,7 @@ const getStreakInfo = (req, res) => {
           .status(200)
           .send({ total: total, longestStreak: longestStreak, streak: streak });
       } else {
-        res.status(403).send('there is no complete record of it');
+        res.status(203).send('there is no complete record of it');
       }
     });
 };
@@ -268,7 +239,6 @@ const getDetail = (req, res) => {
 };
 
 module.exports = {
-  get: get,
   post: post,
   getRecordToday: getRecordToday,
   addRecord: addRecord,
