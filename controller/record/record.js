@@ -163,7 +163,6 @@ function getLongestStreak(data) {
 }
 
 function getStreak(data) {
-  console.log(data[0].date);
   const today = moment().format('YYYY-MM-DD');
   if (data[0].date !== today) return 0;
   let count = 1;
