@@ -64,7 +64,9 @@ const post = (req, res) => {
           )
           .then((result /*[1](changed rows) [0](nothing changed) */) => {
             if (result[0] !== 0) {
-              res.status(201).send('succeed update habit info');
+              res
+                .status(201)
+                .send({ progress: progress, completed: completed });
             } else {
               res.status(204).send('nothing changed');
             }
