@@ -41,11 +41,10 @@ module.exports = {
             obj[`${val.date}`] = [val.completed];
           }
         });
-
         for (let key in obj) {
           if (obj[key].every((val) => val)) {
             responseData.done_all.push(key);
-          } else {
+          } else if (obj[key].some((val) => val)) {
             responseData.done_partially.push(key);
           }
         }
