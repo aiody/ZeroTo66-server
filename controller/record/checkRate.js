@@ -26,7 +26,7 @@ module.exports = {
         include: [
           {
             model: habits,
-            where: { userId: id },
+            where: { userId: id, deletedDate: null },
           },
         ],
         order: [['date', 'ASC']],
