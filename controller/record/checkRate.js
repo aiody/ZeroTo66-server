@@ -1,57 +1,27 @@
 const { record } = require('../../models');
 const { habits } = require('../../models');
+const sequelize = require('sequelize');
+const Op = sequelize.Op;
 const moment = require('moment');
 
 module.exports = {
   getMonthly: async (req, res) => {
     const { id } = req.decoded;
-    const thisMonth = req.query.month || moment().format('MM');
-    const thisYear = req.query.year || moment().format('YYYY');
+    const month = req.query.month || moment().format('MM');
+    const year = req.query.year || moment().format('YYYY');
 
     let responseData = { done_all: [], done_partially: [] };
-    let lastDate = moment(getDateRange(thisYear, thisMonth).end).format('DD');
-    let startDate = getDateRange(thisYear, thisMonth).start;
-    try {
-      for (let i = 0; i < parseInt(lastDate); i++) {
-        let compareDate = moment(startDate).add(i, 'days').format('YYYY-MM-DD');
-        let arr = await getDaily(compareDate, id);
 
-        let completeArr = arr.filter((val) => {
-          if (val.completed) return true;
-        });
-        if (arr.length > 0 && arr.length === completeArr.length) {
-          responseData.done_all.push(compareDate);
-        } else if (
-          arr.length > 0 &&
-          arr.length > completeArr.length &&
-          completeArr.length > 0
-        ) {
-          responseData.done_partially.push(compareDate);
-        }
-      }
-      res.status(200).json(responseData);
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(500);
-    }
-  },
-};
-
-function getDateRange(year, month) {
-  let startDate = moment([year, month - 1]);
-  let endDate = moment(startDate).endOf('month');
-  return {
-    start: startDate.format('YYYY-MM-DD'),
-    end: endDate,
-  };
-}
-
-function getDaily(date, id) {
-  return new Promise((resolve, reject) => {
     record
       .findAll({
         where: {
-          date: date,
+          [Op.and]: [
+            sequelize.where(
+              sequelize.fn('MONTH', sequelize.col('date')),
+              month
+            ),
+            sequelize.where(sequelize.fn('YEAR', sequelize.col('date')), year),
+          ],
         },
         include: [
           {
@@ -59,15 +29,31 @@ function getDaily(date, id) {
             where: { userId: id, deletedDate: null },
           },
         ],
+        order: [['date', 'ASC']],
         raw: true,
       })
-      .then((data) => {
-        resolve(data);
+      .then((monthlyData) => {
+        let obj = {};
+        monthlyData.forEach((val) => {
+          if (val.date in obj) {
+            obj[`${val.date}`].push(val.completed);
+          } else {
+            obj[`${val.date}`] = [val.completed];
+          }
+        });
+
+        for (let key in obj) {
+          if (obj[key].every((val) => val)) {
+            responseData.done_all.push(key);
+          } else {
+            responseData.done_partially.push(key);
+          }
+        }
+        res.status(200).json(responseData);
       })
       .catch((err) => {
         console.log(err);
-        reject(err);
+        res.sendStatus(500);
       });
-  });
-}
-
+  },
+};
