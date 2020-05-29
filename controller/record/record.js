@@ -86,7 +86,7 @@ const addRecord = (
   date = moment().format('YYYY-MM-DD')
 ) => {
   return new Promise((resolve, reject) => {
-    const day = moment(date).format('llll');
+    const day = moment(date).format('llll'); // Mon, Jan 14 2013 2:08 PM
     const index = dayOfWeek.indexOf(day.split(',')[0]);
     habits.findOne({ where: { id: habitId } }).then((data) => {
       if (data && data.frequency[index] === '1') {
