@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       deletedDate: DataTypes.DATEONLY,
+      frequency: {
+        type: DataTypes.STRING,
+        defaultValue: '1111111',
+      },
       userId: DataTypes.INTEGER,
     },
     {

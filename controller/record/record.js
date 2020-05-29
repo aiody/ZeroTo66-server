@@ -1,6 +1,7 @@
 const { record } = require('../../models');
 const { habits } = require('../../models');
 const moment = require('moment');
+const dayOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 // 미사용중
 const get = (req, res) => {
@@ -85,19 +86,27 @@ const addRecord = (
   date = moment().format('YYYY-MM-DD')
 ) => {
   return new Promise((resolve, reject) => {
-    record
-      .create({
-        date: date,
-        completed: completed,
-        habitId: habitId,
-      })
-      .then(async (record) => {
-        const data = await record.get({ plain: true });
-        resolve(data);
-      })
-      .catch((err) => {
-        reject(err);
-      });
+    const day = moment(date).format('llll');
+    const index = dayOfWeek.indexOf(day.split(',')[0]);
+    habits.findOne({ where: { id: habitId } }).then((data) => {
+      if (data && data.frequency[index] === '1') {
+        record
+          .create({
+            date: date,
+            completed: completed,
+            habitId: habitId,
+          })
+          .then(async (record) => {
+            const data = await record.get({ plain: true });
+            resolve(data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      } else {
+        resolve();
+      }
+    });
   });
 };
 
@@ -107,7 +116,9 @@ const syncRecord = (userId) => {
       const today = moment().format('YYYY-MM-DD');
       data.forEach((ele) => {
         record.max('date', { where: { habitId: ele.id } }).then(async (max) => {
-          if (max !== today) {
+          if (max === 0) {
+            await addRecord(ele.id);
+          } else if (max !== today) {
             let diff = moment(today).diff(max, 'days');
             for (let i = 1; i <= diff; i++) {
               await addRecord(
